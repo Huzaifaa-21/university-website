@@ -1,0 +1,21 @@
+university-website/
+│
+├── index.html                # Homepage
+├── about.html                # About Us page
+├── notices.html              # Notices page
+├── student-corner.html       # Student Corner page
+├── admission.html            # Admission page
+├── contact.html              # Contact page
+│
+├── css/
+│   ├── style.css             # Main stylesheet (for home page)
+│   ├── about.css             # About page CSS
+│   ├── notices.css           # Notices page CSS
+│   ├── student-corner.css    # Student Corner page CSS
+│   ├── admission.css         # Admission page CSS
+│   └── contact.css           # Contact page CSS
+│
+├── js/
+│   └── script.js             # JavaScript for menu functionality
+│
+└── server.py                 # Python backend to connect MySQL database

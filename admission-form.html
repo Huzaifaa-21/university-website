@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University - Admission Form</title>
+    <link rel="stylesheet" href="css/admission-form.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="University Logo">
+            <h1>University Name</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="notices.html">Notices</a></li>
+                <li><a href="student-corner.html">Student Corner</a></li>
+                <li><a href="admission.html">Admission</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admission-form">
+            <h2>Apply for Admission</h2>
+            <form action="{{ url_for('submit_application') }}" method="POST">
+                
+                <label for="full_name">Full Name:</label>
+                <input type="text" id="full_name" name="full_name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone_number">Phone Number:</label>
+                <input type="tel" id="phone_number" name="phone_number" required>
+
+                <label for="board_name">Board Name:</label>
+                <input type="text" id="board_name" name="board_name" required>
+
+                <label for="class_name">Class (e.g., 12th, Undergraduate):</label>
+                <input type="text" id="class_name" name="class_name" required>
+
+                <label for="percentage">Percentage (%):</label>
+                <input type="number" id="percentage" name="percentage" step="0.01" required>
+
+                <label for="additional_details">Additional Details (if any):</label>
+                <textarea id="additional_details" name="additional_details" rows="4"></textarea>
+
+                <button type="submit">Submit Application</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 University Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>
