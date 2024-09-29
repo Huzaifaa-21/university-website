@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University - Admission</title>
     <link rel="stylesheet" href="/static/css/admission.css">
-    
 </head>
 <body>
     <header>
@@ -15,12 +14,12 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="notices.html">Notices</a></li>
-                <li><a href="student-corner.html">Student Corner</a></li>
-                <li><a href="admission.html">Admission</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('notices') }}">Notices</a></li>
+                <li><a href="{{ url_for('student_corner') }}">Student Corner</a></li>
+                <li><a href="{{ url_for('admission') }}">Admission</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
             </ul>
         </nav>
     </header>
@@ -29,8 +28,7 @@
         <section class="admission">
             <h2>Admissions Now Open!</h2>
             <p>Join us for the upcoming academic year. Apply now for Spring 2025.</p>
-            <a href="admission-form.html">Apply Online</a>
-
+            <a href="{{ url_for('admission_form') }}">Apply Online</a>
         </section>
     </main>
 

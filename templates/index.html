@@ -14,12 +14,12 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="notices.html">Notices</a></li>
-                <li><a href="student-corner.html">Student Corner</a></li>
-                <li><a href="admission.html">Admission</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('notices') }}">Notices</a></li>
+                <li><a href="{{ url_for('student_corner') }}">Student Corner</a></li>
+                <li><a href="{{ url_for('admission_form') }}">Admission</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
             </ul>
         </nav>
     </header>
@@ -35,6 +35,6 @@
         <p>&copy; 2024 University Name. All rights reserved.</p>
     </footer>
     
-    <script src="js/script.js"></script>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>
