@@ -6,22 +6,92 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # MySQL Database connection
-def create_db_connection():
+def create_db_connection(database=None):
     try:
         return mysql.connector.connect(
             host="localhost",
             user="root",
-            port=3308,
-            password="Huzaifa@21",
-            database="university"
+            port=3306,
+            password="Lko@6388895330",
+            database=database
         )
     except Error as e:
         print(f"Error connecting to MySQL: {e}")
         return None
 
+# Function to create the database if it doesn't exist
+def create_database():
+    connection = create_db_connection()
+    if connection is None:
+        print("Failed to create a database connection.")
+        return
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute("CREATE DATABASE IF NOT EXISTS university")
+        connection.commit()
+        print("Database 'university' checked/created.")
+    except Error as e:
+        print(f"Error creating database: {e}")
+    finally:
+        cursor.close()
+        connection.close()
+
+# Function to create the table if it doesn't exist
+def create_table():
+    db = create_db_connection("university")
+    if db is None:
+        print("Failed to connect to the 'university' database.")
+        return
+
+    try:
+        cursor = db.cursor()
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS admission_applications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            full_name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(50) NOT NULL,
+            board_name VARCHAR(255) NOT NULL,
+            class_name VARCHAR(50) NOT NULL,
+            percentage FLOAT NOT NULL,
+            additional_details TEXT
+        );
+        """
+        cursor.execute(create_table_query)
+        db.commit()
+        print("Table 'admission_applications' checked/created.")
+    except Error as e:
+        print(f"Error creating table: {e}")
+    finally:
+        cursor.close()
+        db.close()
+
+# Creating routes for different pages
+
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/notices')
+def notices():
+    return render_template('notices.html')
+
+@app.route('/student-corner')
+def student_corner():
+    return render_template('student-corner.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/admission')
+def admission():
+    return render_template('admission.html')
 
 @app.route('/admission-form')
 def admission_form():
@@ -54,7 +124,7 @@ def submit_application():
         return redirect(url_for('admission_form'))
 
     # Database insertion
-    db = create_db_connection()
+    db = create_db_connection("university")
     if db is None:
         flash('Could not connect to the database. Please try again later.', 'danger')
         return redirect(url_for('admission_form'))
@@ -79,4 +149,7 @@ def submit_application():
     return redirect(url_for('admission_form'))
 
 if __name__ == '__main__':
+    # Create database and table before running the app
+    create_database()
+    create_table()
     app.run(debug=True)
