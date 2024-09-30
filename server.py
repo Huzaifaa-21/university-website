@@ -1,11 +1,11 @@
 import datetime
+import os
 from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file
 import mysql.connector
 from mysql.connector import Error
 from functools import wraps
 from otp_auth import generate_otp, send_otp_via_email
 from fpdf import FPDF
-import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -16,7 +16,7 @@ def create_db_connection(database=None):
         return mysql.connector.connect(
             host="localhost",
             user="root",
-            port=3306,
+            port=3306,  # Make sure to use the correct port (3308 as per your earlier context)
             password="Lko@6388895330",
             database=database
         )
@@ -141,7 +141,6 @@ def verify_otp():
 
     return render_template('verify_otp.html')
 
-
 @app.route('/logout')
 @login_required
 def logout():
@@ -219,74 +218,67 @@ def submit_application():
 
     cursor = db.cursor()
     sql = """INSERT INTO admission_applications 
-             (full_name, email, phone_number, board_name, class_name, percentage, additional_details)
+             (full_name, email, phone_number, board_name, class_name, percentage, additional_details) 
              VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-    values = (full_name, email, phone_number, board_name, class_name, percentage, additional_details)
-    
+    data = (full_name, email, phone_number, board_name, class_name, percentage, additional_details)
     try:
-        cursor.execute(sql, values)
+        cursor.execute(sql, data)
         db.commit()
-        flash('Application submitted successfully!', 'success')
-
-        # Store application details in session for preview
-        session['application_data'] = {
-            'full_name': full_name,
-            'email': email,
-            'phone_number': phone_number,
-            'board_name': board_name,
-            'class_name': class_name,
-            'percentage': percentage,
-            'additional_details': additional_details
-        }
-
-        return redirect(url_for('preview_application'))  # Redirect to preview page
-
+        flash("Application submitted successfully!", "success")
     except Error as e:
-        db.rollback()
-        flash(f'Error submitting application: {e}', 'danger')
+        flash(f"Error occurred while submitting the application: {e}", "danger")
     finally:
         cursor.close()
         db.close()
 
-    return redirect(url_for('admission_form'))
+    # Store application data in session for later use
+    session['application_data'] = {
+        'full_name': full_name,
+        'email': email,
+        'phone_number': phone_number,
+        'board_name': board_name,
+        'class_name': class_name,
+        'percentage': percentage,
+        'additional_details': additional_details
+    }
+    print(f"Session Data: {session.get('application_data')}")
+    print("Application submitted successfully. Redirecting to preview page.")
+    return redirect(url_for('admission_preview'))
 
-@app.route('/preview-application')
+@app.route('/admission-preview')
 @login_required
-def preview_application():
+def admission_preview():
     application_data = session.get('application_data')
-    if not application_data:
-        flash("No application data found.", "danger")
-        return redirect(url_for('admission_form'))
-
     return render_template('preview_application.html', application_data=application_data)
 
-@app.route('/download-pdf', methods=['POST'])
+@app.route('/generate-pdf')
 @login_required
-def download_pdf():
+def generate_pdf():
     application_data = session.get('application_data')
     if not application_data:
         flash("No application data found.", "danger")
         return redirect(url_for('admission_form'))
 
-    # Create a PDF file
+    # Create the "downloaded" directory if it doesn't exist
+    if not os.path.exists("downloaded"):
+        os.makedirs("downloaded")
+
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
 
+    # Add application details to the PDF
     for key, value in application_data.items():
-        pdf.cell(200, 10, f"{key.replace('_', ' ').title()}: {value}", ln=True)
+        pdf.cell(200, 10, f"{key}: {value}", ln=True)
 
-    # Ensure the 'downloaded' directory exists
-    download_folder = 'downloaded'
-    os.makedirs(download_folder, exist_ok=True)
-    
-    pdf_file_path = os.path.join(download_folder, 'application.pdf')
+    # Save PDF
+    pdf_file_path = f"downloaded/{application_data['full_name'].replace(' ', '_')}_application.pdf"
     pdf.output(pdf_file_path)
 
     # Send the PDF file for download
-    return send_file(pdf_file_path, as_attachment=True)
+    return send_file(pdf_file_path, as_attachment=True, download_name=os.path.basename(pdf_file_path))
 
 if __name__ == '__main__':
-    create_database()  # Ensure the database is created
-    create_table()  # Ensure the table is created
+    create_database()  # Create the database if it doesn't exist
+    create_table()     # Create the table if it doesn't exist
     app.run(debug=True)

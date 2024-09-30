@@ -18,7 +18,7 @@
                 <li><a href="{{ url_for('about') }}">About</a></li>
                 <li><a href="{{ url_for('notices') }}">Notices</a></li>
                 <li><a href="{{ url_for('student_corner') }}">Student Corner</a></li>
-                <li><a href="{{ url_for('admission_form') }}">Admission</a></li>
+                <li><a href="{{ url_for('admission') }}">Admission</a></li>
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
@@ -27,8 +27,14 @@
 
     <main>
         <section class="intro">
-            <h2>Welcome to University</h2>
-            <p>Your journey to excellence begins here.</p>
+            <h2 id="typed-title"></h2>
+            <p id="typed-subtitle"></p>
+        </section>
+
+        <section class="image-gallery">
+            <img src="{{ url_for('static', filename='resources/uni3.jpeg') }}" alt="Campus Image 1" class="fade-in" width="300">
+            <img src="{{ url_for('static', filename='resources/uni2.jpg') }}" alt="Campus Image 2" class="fade-in" width="300">
+            <img src="{{ url_for('static', filename='resources/uni1.webp') }}" alt="Campus Image 3" class="fade-in" width="300">
         </section>
     </main>
 
@@ -37,5 +43,46 @@
     </footer>
     
     <script src="/static/js/script.js"></script>
+    <script>
+        // Typing effect for intro text
+        function typeEffect(element, text, delay) {
+            let index = 0;
+            function type() {
+                if (index < text.length) {
+                    element.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(type, delay);
+                }
+            }
+            type();
+        }
+
+        const title = "Welcome to University";
+        const subtitle = "Your journey to excellence begins here.";
+        typeEffect(document.getElementById("typed-title"), title, 100);
+        setTimeout(() => {
+            typeEffect(document.getElementById("typed-subtitle"), subtitle, 100);
+        }, title.length * 100); // Start subtitle after title is finished
+
+        // Fade-in effect for images
+        window.onload = function() {
+            const images = document.querySelectorAll('.fade-in');
+            images.forEach((img, index) => {
+                setTimeout(() => {
+                    img.classList.add('visible');
+                }, index * 500); // Staggered fade-in effect
+            });
+        };
+
+        // Change header background on scroll
+        window.onscroll = function() {
+            const header = document.querySelector('header');
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        };
+    </script>
 </body>
 </html>
