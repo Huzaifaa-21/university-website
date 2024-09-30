@@ -1,0 +1,104 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #8360c3, #2ebf91);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login Container */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Login Box */
+.login-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 28px;
+}
+
+/* Input Group */
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px; /* Adjusted padding */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f9f9f9;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #2ebf91;
+}
+
+.input-group label {
+    position: absolute;
+    left: 10px;
+    top: 50%; /* Start in the middle */
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #999;
+    transition: all 0.3s;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -10px; /* Adjusted position */
+    left: 10px;
+    color: #2ebf91;
+    font-size: 12px;
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2ebf91;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #27a982;
+}
+
+/* OTP Notice */
+.otp-notice {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}

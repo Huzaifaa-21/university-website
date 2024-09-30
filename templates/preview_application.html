@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Preview</title>
+    <link rel="stylesheet" href="/static/css/admission-form.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="University Logo">
+            <h1>University Name</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('notices') }}">Notices</a></li>
+                <li><a href="{{ url_for('student_corner') }}">Student Corner</a></li>
+                <li><a href="{{ url_for('admission_form') }}">Admission</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="preview">
+            <h2>Application Preview</h2>
+            <p><strong>Full Name:</strong> {{ full_name }}</p>
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Phone Number:</strong> {{ phone_number }}</p>
+            <p><strong>Board Name:</strong> {{ board_name }}</p>
+            <p><strong>Class:</strong> {{ class_name }}</p>
+            <p><strong>Percentage:</strong> {{ percentage }}</p>
+            <p><strong>Additional Details:</strong></p>
+            <p>{{ additional_details }}</p>
+
+            <form action="{{ url_for('download_pdf') }}" method="POST">
+                <input type="hidden" name="full_name" value="{{ full_name }}">
+                <input type="hidden" name="email" value="{{ email }}">
+                <input type="hidden" name="phone_number" value="{{ phone_number }}">
+                <input type="hidden" name="board_name" value="{{ board_name }}">
+                <input type="hidden" name="class_name" value="{{ class_name }}">
+                <input type="hidden" name="percentage" value="{{ percentage }}">
+                <input type="hidden" name="additional_details" value="{{ additional_details }}">
+                <button type="submit">Download as PDF</button>
+            </form>
+
+            <button onclick="window.print()">Print this page</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 University Name. All rights reserved.</p>
+    </footer>
+</body>
+</html>
