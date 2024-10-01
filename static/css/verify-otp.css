@@ -1,0 +1,63 @@
+/* Reset some default styles */
+body, h2, form, label, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Light background color */
+    color: #333; /* Dark text color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height for centering */
+}
+
+.otp-container {
+    background-color: #fff; /* White background for the container */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px; /* Spacing inside the container */
+    width: 300px; /* Fixed width */
+}
+
+h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 20px; /* Space below the heading */
+    color: #5b9bd5; /* Accent color for the heading */
+}
+
+form {
+    display: flex;
+    flex-direction: column; /* Arrange items vertically */
+}
+
+label {
+    margin-bottom: 5px; /* Space below the label */
+    font-weight: bold; /* Bold label text */
+}
+
+input[type="text"] {
+    padding: 10px; /* Padding inside the input */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners for input */
+    margin-bottom: 15px; /* Space below the input */
+    font-size: 16px; /* Font size for input text */
+}
+
+button {
+    background-color: #5b9bd5; /* Button color */
+    color: white; /* Text color for the button */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners for button */
+    padding: 10px; /* Padding inside the button */
+    font-size: 16px; /* Font size for button text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+button:hover {
+    background-color: #4a8cc1; /* Darker shade on hover */
+}
