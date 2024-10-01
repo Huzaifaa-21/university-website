@@ -5,11 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University - Admission Form</title>
     <link rel="stylesheet" href="/static/css/admission-form.css">
+    <script>
+        function validatePhoneNumber() {
+            const phoneInput = document.getElementById("phone_number");
+            const phoneNumber = phoneInput.value;
+            const errorMessage = document.getElementById("phone-error");
+
+            // Clear previous error message
+            errorMessage.textContent = '';
+
+            // Check if the phone number contains only digits
+            if (phoneNumber && !/^\d+$/.test(phoneNumber)) {
+                errorMessage.textContent = "Please enter a valid phone number containing numbers only.";
+                errorMessage.style.color = "red"; // Set the error message color
+            }
+        }
+
+        function validateBoardName() {
+            const boardInput = document.getElementById("board_name");
+            const boardName = boardInput.value;
+            const errorMessage = document.getElementById("board-error");
+
+            // Clear previous error message
+            errorMessage.textContent = '';
+
+            // Check if the board name contains only letters
+            if (boardName && !/^[A-Za-z\s]+$/.test(boardName)) {
+                errorMessage.textContent = "Please enter a valid board name containing letters only.";
+                errorMessage.style.color = "red"; // Set the error message color
+            }
+        }
+
+        function validateClassName() {
+            const classInput = document.getElementById("class_name");
+            const className = classInput.value;
+            const errorMessage = document.getElementById("class-error");
+
+            // Clear previous error message
+            errorMessage.textContent = '';
+
+            // Check if the class name is less than 3 characters
+            if (className.length >= 3) {
+                errorMessage.textContent = "Class name must be less than 3 characters.";
+                errorMessage.style.color = "red"; // Set the error message color
+            }
+        }
+
+        function validatePhoneOnSubmit(event) {
+            const phoneInput = document.getElementById("phone_number");
+            const phoneNumber = phoneInput.value;
+            const phoneErrorMessage = document.getElementById("phone-error");
+
+            // Clear previous error message
+            phoneErrorMessage.textContent = '';
+
+            // Check if the phone number contains only digits
+            if (!/^\d+$/.test(phoneNumber)) {
+                event.preventDefault(); // Prevent form submission
+                phoneErrorMessage.textContent = "Please enter a valid phone number containing numbers only.";
+                phoneErrorMessage.style.color = "red"; // Set the error message color
+                phoneInput.focus(); // Set focus back to the phone number input
+            }
+        }
+
+        function validateFormOnSubmit(event) {
+            const boardInput = document.getElementById("board_name");
+            const boardName = boardInput.value;
+            const boardErrorMessage = document.getElementById("board-error");
+
+            const classInput = document.getElementById("class_name");
+            const className = classInput.value;
+            const classErrorMessage = document.getElementById("class-error");
+
+            // Clear previous error messages
+            boardErrorMessage.textContent = '';
+            classErrorMessage.textContent = '';
+
+            let isValid = true;
+
+            // Check if the board name contains only letters
+            if (boardName && !/^[A-Za-z\s]+$/.test(boardName)) {
+                isValid = false;
+                boardErrorMessage.textContent = "Please enter a valid board name containing letters only.";
+                boardErrorMessage.style.color = "red"; // Set the error message color
+                boardInput.focus(); // Set focus back to the board name input
+            }
+
+            // Check if the class name is less than 3 characters
+            if (className.length >= 3) {
+                isValid = false;
+                classErrorMessage.textContent = "Class name must be less than 3 characters.";
+                classErrorMessage.style.color = "red"; // Set the error message color
+                classInput.focus(); // Set focus back to the class name input
+            }
+
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if there are errors
+            }
+        }
+    </script>
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="logo.png" alt="University Logo">
+            <img src="/static/logo.png" alt="University Logo">
             <h1>University Name</h1>
         </div>
         <nav>
@@ -27,8 +126,21 @@
     <main>
         <section class="admission-form">
             <h2>Apply for Admission</h2>
-            <form action="{{ url_for('submit_application') }}" method="POST">
-                
+            
+            <!-- Flash Messages Section -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('submit_application') }}" method="POST" onsubmit="validateFormOnSubmit(event); validatePhoneOnSubmit(event);">
                 <label for="full_name">Full Name:</label>
                 <input type="text" id="full_name" name="full_name" required>
 
@@ -36,16 +148,19 @@
                 <input type="email" id="email" name="email" required>
 
                 <label for="phone_number">Phone Number:</label>
-                <input type="tel" id="phone_number" name="phone_number" required>
+                <input type="tel" id="phone_number" name="phone_number" required oninput="validatePhoneNumber()">
+                <div id="phone-error" class="error-message"></div>
 
                 <label for="board_name">Board Name:</label>
-                <input type="text" id="board_name" name="board_name" required>
+                <input type="text" id="board_name" name="board_name" required oninput="validateBoardName()">
+                <div id="board-error" class="error-message"></div>
 
                 <label for="class_name">Class (e.g., 12th, Undergraduate):</label>
-                <input type="text" id="class_name" name="class_name" required>
+                <input type="text" id="class_name" name="class_name" required oninput="validateClassName()">
+                <div id="class-error" class="error-message"></div>
 
                 <label for="percentage">Percentage (%):</label>
-                <input type="number" id="percentage" name="percentage" step="0.01" required>
+                <input type="number" id="percentage" name="percentage" min="0" max="100" step="0.01" required>
 
                 <label for="additional_details">Additional Details (if any):</label>
                 <textarea id="additional_details" name="additional_details" rows="4"></textarea>
