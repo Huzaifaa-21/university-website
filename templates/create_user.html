@@ -6,25 +6,6 @@
     <title>Create User - University Portal</title>
     <link rel="stylesheet" href="/static/css/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group.error input {
-            border: 2px solid red;
-            box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.8em;
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-        }
-    </style>
 </head>
 <body>
     <div class="login-container">
@@ -52,6 +33,18 @@
                     <span class="error-message">{{ session['password_error'] }}</span>
                     {% endif %}
                 </div>
+
+                <!-- Role selection dropdown -->
+                <div class="input-group">
+                    <select name="role" id="role" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="student">Student</option>
+                    </select>
+                    <label for="role">Role</label>
+                    <span class="error-message">Please select a role</span>
+                </div>
+
                 <button type="submit" class="login-btn">Create Account</button>
             </form>
         </div>

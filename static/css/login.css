@@ -43,12 +43,13 @@ body {
 /* Input Group */
 .input-group {
     position: relative;
-    margin-bottom: 20px; /* Reduced bottom margin for better spacing */
+    margin-bottom: 20px;
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
     width: 100%;
-    padding: 12px; /* Adjusted padding */
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -57,30 +58,37 @@ body {
     transition: all 0.3s;
 }
 
-.input-group input:focus {
+/* Focus States for Input and Select */
+.input-group input:focus,
+.input-group select:focus {
     border-color: #2ebf91;
 }
 
+/* Label Styling */
 .input-group label {
     position: absolute;
-    left: 15px; /* Adjusted label position */
-    top: 50%; /* Start in the middle */
+    left: 15px;
+    top: 50%;
     transform: translateY(-50%);
     font-size: 16px;
     color: #999;
     transition: all 0.3s;
 }
 
+/* Move label up when input/select is focused or filled */
 .input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
-    top: -10px; /* Adjusted position */
-    left: 15px; /* Consistent left positioning */
+.input-group input:not(:placeholder-shown) + label,
+.input-group select:focus + label,
+.input-group select:not([value=""]) + label {
+    top: -10px;
+    left: 15px;
     color: #2ebf91;
     font-size: 12px;
 }
 
 /* Error State */
-.input-group.error input {
+.input-group.error input,
+.input-group.error select {
     border-color: red;
     box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
