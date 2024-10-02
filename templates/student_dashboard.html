@@ -1,0 +1,47 @@
+<!-- templates/student_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Welcome, {{ student.name }}!</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('student_profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('student_courses') }}">My Courses</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="dashboard-content">
+            <h2>Dashboard Overview</h2>
+            <p>You are currently enrolled in {{ course_count }} courses.</p>
+
+            <h3>Recent Announcements</h3>
+            <ul>
+                {% for announcement in announcements %}
+                    <li>{{ announcement.date }}: {{ announcement.text }}</li>
+                {% else %}
+                    <li>No announcements available.</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Upcoming Deadlines</h3>
+            <ul>
+                {% for deadline in deadlines %}
+                    <li>{{ deadline.course_name }} - {{ deadline.assignment }}: {{ deadline.due_date }}</li>
+                {% else %}
+                    <li>No upcoming deadlines.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
