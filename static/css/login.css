@@ -43,7 +43,7 @@ body {
 /* Input Group */
 .input-group {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 20px; /* Reduced bottom margin for better spacing */
 }
 
 .input-group input {
@@ -63,7 +63,7 @@ body {
 
 .input-group label {
     position: absolute;
-    left: 10px;
+    left: 15px; /* Adjusted label position */
     top: 50%; /* Start in the middle */
     transform: translateY(-50%);
     font-size: 16px;
@@ -74,9 +74,22 @@ body {
 .input-group input:focus + label,
 .input-group input:not(:placeholder-shown) + label {
     top: -10px; /* Adjusted position */
-    left: 10px;
+    left: 15px; /* Consistent left positioning */
     color: #2ebf91;
     font-size: 12px;
+}
+
+/* Error State */
+.input-group.error input {
+    border-color: red;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
 }
 
 /* Button */

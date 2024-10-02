@@ -1,76 +1,14 @@
 import datetime
 import os
 from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file
-import mysql.connector
-from mysql.connector import Error
+from werkzeug.security import generate_password_hash, check_password_hash
+from fpdf import FPDF
+from db import create_db_connection, create_database, create_table
 from functools import wraps
 from otp_auth import generate_otp, send_otp_via_email
-from fpdf import FPDF
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-
-# MySQL Database connection
-def create_db_connection(database=None):
-    try:
-        return mysql.connector.connect(
-            host="localhost",
-            user="root",
-            port=3306,  # Make sure to use the correct port (3308 as per your earlier context)
-            password="Lko@6388895330",
-            database=database
-        )
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
-        return None
-
-# Function to create the database if it doesn't exist
-def create_database():
-    connection = create_db_connection()
-    if connection is None:
-        print("Failed to create a database connection.")
-        return
-
-    try:
-        cursor = connection.cursor()
-        cursor.execute("CREATE DATABASE IF NOT EXISTS university")
-        connection.commit()
-        print("Database 'university' checked/created.")
-    except Error as e:
-        print(f"Error creating database: {e}")
-    finally:
-        cursor.close()
-        connection.close()
-
-# Function to create the table if it doesn't exist
-def create_table():
-    db = create_db_connection("university")
-    if db is None:
-        print("Failed to connect to the 'university' database.")
-        return
-
-    try:
-        cursor = db.cursor()
-        create_table_query = """
-        CREATE TABLE IF NOT EXISTS admission_applications (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            full_name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            phone_number VARCHAR(50) NOT NULL,
-            board_name VARCHAR(255) NOT NULL,
-            class_name VARCHAR(50) NOT NULL,
-            percentage FLOAT NOT NULL,
-            additional_details TEXT
-        );
-        """
-        cursor.execute(create_table_query)
-        db.commit()
-        print("Table 'admission_applications' checked/created.")
-    except Error as e:
-        print(f"Error creating table: {e}")
-    finally:
-        cursor.close()
-        db.close()
 
 # Login required decorator
 def login_required(f):
@@ -83,29 +21,97 @@ def login_required(f):
     return decorated_function
 
 @app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
+        password = request.form.get('password')
+
+        # Clear previous session error messages
+        session.pop('email_error', None)
+        session.pop('password_error', None)
 
         if not email:
-            flash("Email is required!", "danger")
+            session['email_error'] = "Email is required!"
+        if not password:
+            session['password_error'] = "Password is required!"
+
+        if not email or not password:
             return redirect(url_for('login'))
 
-        otp = generate_otp()
-        session['email'] = email  # Store email in session
-        session['otp'] = otp  # Store OTP in session
-        session['otp_expiry'] = (datetime.datetime.now() + datetime.timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')  # Set OTP expiration
-        session['otp_attempts'] = 0  # Initialize OTP attempts
-
-        # Send OTP via email
-        if send_otp_via_email(email, otp):
-            flash(f"OTP has been sent to {email}.", "info")
-            return redirect(url_for('verify_otp'))  # Redirect to OTP verification page
-        else:
-            flash("Failed to send OTP. Please try again.", "danger")
+        db = create_db_connection("university")
+        if db is None:
+            session['email_error'] = "Database connection error!"
             return redirect(url_for('login'))
+
+        cursor = db.cursor(dictionary=True)
+
+        try:
+            cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+            user = cursor.fetchone()
+
+            if user:
+                if check_password_hash(user['password'], password):
+                    otp = generate_otp()
+                    session['email'] = email
+                    session['otp'] = otp
+                    session['otp_expiry'] = (datetime.datetime.now() + datetime.timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M:%S')
+                    session['otp_attempts'] = 0
+
+                    if send_otp_via_email(email, otp):
+                        flash(f"OTP has been sent to {email}.", "info")
+                        return redirect(url_for('verify_otp'))
+                    else:
+                        session['email_error'] = "Failed to send OTP!"
+                else:
+                    session['password_error'] = "Incorrect password!"
+                    return redirect(url_for('login'))
+            else:
+                # Notify user they will be redirected to user creation page
+                flash("You are not an existing user. Redirecting to the user creation page.", "info")
+                return redirect(url_for('create_user'))
+
+        except Exception as e:
+            session['email_error'] = f"An error occurred: {e}"
+            return redirect(url_for('login'))
+        finally:
+            cursor.close()
+            db.close()
 
     return render_template('login.html')
+
+@app.route('/create_user', methods=['GET', 'POST'])
+def create_user():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')  # Add more fields as needed
+
+        if not email or not password:
+            flash("All fields are required!", "danger")
+            return redirect(url_for('create_user'))
+
+        db = create_db_connection("university")
+        cursor = db.cursor()
+
+        # Check if user already exists
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+
+        if user:
+            flash("User already exists! Please login.", "danger")
+            return redirect(url_for('login'))
+
+        # Hash the password before storing it
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+
+        # Insert new user into the database with hashed password
+        cursor.execute("INSERT INTO users (email, password) VALUES (%s, %s)", (email, hashed_password))
+        db.commit()
+
+        flash("Account created successfully! You can now log in.", "success")
+        return redirect(url_for('login'))
+
+    return render_template('create_user.html')
 
 @app.route('/verify-otp', methods=['GET', 'POST'])
 def verify_otp():
@@ -183,6 +189,12 @@ def admission():
 def admission_form():
     return render_template('admission-form.html')
 
+@app.route('/admission-preview')
+@login_required
+def admission_preview():
+    application_data = session.get('application_data')
+    return render_template('preview_application.html', application_data=application_data)
+
 @app.route('/submit-application', methods=['POST'])
 @login_required
 def submit_application():
@@ -198,7 +210,7 @@ def submit_application():
     # Input validation
     if not all([full_name, email, phone_number, board_name, class_name, percentage]):
         flash('All fields except "Additional Details" are required.', 'danger')
-        return render_template('admission_form.html', 
+        return render_template('admission-form.html', 
                                full_name=full_name, 
                                email=email, 
                                phone_number=phone_number, 
@@ -212,7 +224,7 @@ def submit_application():
         percentage = float(percentage)
         if percentage < 0 or percentage > 100:
             flash('Percentage must be between 0 and 100.', 'danger')
-            return render_template('admission_form.html', 
+            return render_template('admission-form.html', 
                                    full_name=full_name, 
                                    email=email, 
                                    phone_number=phone_number, 
@@ -222,7 +234,7 @@ def submit_application():
                                    additional_details=additional_details)
     except ValueError:
         flash('Invalid percentage value. Please enter a number.', 'danger')
-        return render_template('admission_form.html', 
+        return render_template('admission-form.html', 
                                full_name=full_name, 
                                email=email, 
                                phone_number=phone_number, 
@@ -235,7 +247,7 @@ def submit_application():
     db = create_db_connection("university")
     if db is None:
         flash('Could not connect to the database. Please try again later.', 'danger')
-        return render_template('admission_form.html', 
+        return render_template('admission-form.html', 
                                full_name=full_name, 
                                email=email, 
                                phone_number=phone_number, 
@@ -252,17 +264,9 @@ def submit_application():
     try:
         cursor.execute(sql, data)
         db.commit()
-        flash("Application submitted successfully!", "success")
-    except Error as e:
-        flash(f"Error occurred while submitting the application: {e}", "danger")
-        return render_template('admission_form.html', 
-                               full_name=full_name, 
-                               email=email, 
-                               phone_number=phone_number, 
-                               board_name=board_name, 
-                               class_name=class_name, 
-                               percentage=percentage, 
-                               additional_details=additional_details)
+        flash('Application submitted successfully!', 'success')
+    except Exception as e:
+        flash(f'An error occurred: {e}', 'danger')
     finally:
         cursor.close()
         db.close()
@@ -282,11 +286,6 @@ def submit_application():
     print("Application submitted successfully. Redirecting to preview page.")
     return redirect(url_for('admission_preview'))
 
-@app.route('/admission-preview')
-@login_required
-def admission_preview():
-    application_data = session.get('application_data')
-    return render_template('preview_application.html', application_data=application_data)
 
 @app.route('/generate-pdf')
 @login_required
@@ -316,6 +315,6 @@ def generate_pdf():
     return send_file(pdf_file_path, as_attachment=True, download_name=os.path.basename(pdf_file_path))
 
 if __name__ == '__main__':
-    create_database()  # Create the database if it doesn't exist
-    create_table()     # Create the table if it doesn't exist
-    app.run(host='127.0.0.1', port=5001, debug=True)
+    create_database()  # Create database if not exists
+    create_table()     # Create necessary tables
+    app.run(debug=True)

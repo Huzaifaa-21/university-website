@@ -40,6 +40,8 @@ def create_table():
 
     try:
         cursor = db.cursor()
+
+        # Creating the 'admission_applications' table
         create_table_query = """
         CREATE TABLE IF NOT EXISTS admission_applications (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -53,8 +55,19 @@ def create_table():
         );
         """
         cursor.execute(create_table_query)
+
+        # Creating the 'users' table
+        create_users_table_query = """
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL  -- Store hashed passwords in production
+        );
+        """
+        cursor.execute(create_users_table_query)
+
         db.commit()
-        print("Table 'admission_applications' checked/created.")
+        print("Tables 'admission_applications' and 'users' checked/created.")
     except Error as e:
         print(f"Error creating table: {e}")
     finally:
