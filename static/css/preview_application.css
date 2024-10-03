@@ -5,25 +5,24 @@ body {
     padding: 0;
     background-color: #f0f4f8;
     color: #333;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
 
 /* Header styles */
 header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #007BFF;
-    color: white;
-    padding: 15px 0;
-    text-align: center;
+    background-color: #003366;
+    color: #fff;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
 }
 
+/* Logo styling inside the header */
 .logo img {
     height: 50px;
     vertical-align: middle;
@@ -35,14 +34,65 @@ header {
     vertical-align: middle;
 }
 
+/* Navigation styles */
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    color: #ccc;
+}
+
 /* Main content centering */
 main {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items at the start */
-    flex-grow: 1;
+    align-items: flex-start;
+    padding-top: 100px; /* Offset for fixed header */
+    margin-bottom: 50px; /* For footer spacing */
+    background-color: #f0f4f8;
+}
+
+/* Notices Section */
+main .notices {
+    padding: 50px;
     text-align: center;
-    padding-top: 80px; /* Offset for fixed header */
+}
+
+main .notices ul {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+    max-width: 600px; /* Keeps the list centered and compact */
+}
+
+main .notices ul li {
+    padding: 15px;
+    background-color: #d3d3d3; /* Slightly greyish background */
+    margin: 10px 0;
+    border-radius: 8px; /* Rounded corners for a modern feel */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    font-family: 'Georgia', serif; /* Different font for a formal look */
+    font-size: 1.1em;
+}
+
+main .notices ul li:hover {
+    transform: scale(1.02); /* Slight enlargement on hover */
+    background-color: #cccccc; /* Darker grey when hovering */
 }
 
 /* Application preview section styling */
@@ -53,6 +103,7 @@ main {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     width: 90%; /* Make it responsive */
+    text-align: center;
 }
 
 .application-preview h2 {
@@ -91,7 +142,7 @@ main {
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #007BFF;
+    background-color: #003366;
     color: white;
     position: fixed;
     bottom: 0;

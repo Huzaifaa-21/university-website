@@ -40,9 +40,8 @@
                 <p><strong>Percentage:</strong> {{ application_data.percentage }}</p>
                 <p><strong>Additional Details:</strong> {{ application_data.additional_details }}</p>
             </div>
-
             <!-- Download PDF Button -->
-            <a href="{{ url_for('generate_pdf') }}" class="download-button">Download Receipt</a>
+            <a href="{{ url_for('download_receipt') }}" class="download-button">Download Receipt</a>
         </section>
     </main>
 
