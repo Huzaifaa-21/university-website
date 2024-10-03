@@ -41,6 +41,7 @@
                         <th>Class Name</th>
                         <th>Percentage</th>
                         <th>Additional Details</th>
+                        <th>Details</th> <!-- New column for the Details button -->
                     </tr>
                 </thead>
                 <tbody>
@@ -53,6 +54,11 @@
                             <td>{{ student.class_name }}</td>
                             <td>{{ student.percentage }}</td>
                             <td>{{ student.additional_details }}</td>
+                            <td>
+                                <a href="{{ url_for('show_student_details', student_id=student.id) }}">
+                                    <button>Details</button>
+                                </a> <!-- Button to view student details -->
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

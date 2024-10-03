@@ -6,9 +6,15 @@ from fpdf import FPDF
 from db import create_db_connection, create_database, create_table, get_user_from_db  # Ensure get_user_from_db is defined in db.py
 from functools import wraps
 from otp_auth import generate_otp, send_otp_via_email
+from flask import Blueprint
+from admin_dashboard import admin_dashboard_view
+from student_details import student_details_by_id
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+
+admin_routes = Blueprint('admin_routes', __name__)
+student_bp = Blueprint('student', __name__)
 
 # Login required decorator
 def login_required(f):
@@ -87,29 +93,23 @@ def login():
 
     return render_template('login.html')
 
+#@admin_routes.route('/admin_dashboard')
 @app.route('/admin_dashboard')
 @login_required
 def admin_dashboard():
-    if session.get('role') != 'admin':
-        flash("You do not have access to this page.", "danger")
-        return redirect(url_for('home'))
+    """
+    Route for the admin dashboard page. This calls the admin_dashboard_view
+    function from the admin_dashboard.py module.
+    """
+    return admin_dashboard_view()
 
-    db = create_db_connection("university")
-    cursor = db.cursor(dictionary=True)
-
-    try:
-        cursor.execute("SELECT * FROM admission_applications")
-        students = cursor.fetchall()  # Get all students' details
-
-    except Exception as e:
-        flash(f"An error occurred: {e}", "danger")
-        students = []
-
-    finally:
-        cursor.close()
-        db.close()
-
-    return render_template('admin_dashboard.html', students=students)
+#@student_bp.route('/student/<int:student_id>')
+@app.route('/student/<int:student_id>')
+@login_required
+def show_student_details(student_id):
+    students = student_details_by_id(student_id)  # Call the student_details function
+    print(students)
+    return render_template('student_details.html', students=students)  # Render a template with the student details
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():

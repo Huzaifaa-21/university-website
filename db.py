@@ -89,3 +89,38 @@ def get_user_from_db(user_id):
     finally:
         cursor.close()
         db.close()
+        
+def get_all_students():
+    db = create_db_connection("university")
+    if db is None:
+        print("Failed to connect to the 'university' database.")
+        return []
+
+    cursor = db.cursor(dictionary=True)
+    students = []
+
+    try:
+        cursor.execute("SELECT * FROM admission_applications")
+        students = cursor.fetchall()  # Fetch all student details
+    except Error as e:
+        print(f"Error retrieving students: {e}")
+    finally:
+        cursor.close()
+        db.close()
+
+    return students
+
+def get_student_by_id_from_db(student_id):
+    db = create_db_connection("university")
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM admission_applications WHERE id = %s", (student_id,))
+        student = cursor.fetchone()  # Fetch a single student's details
+        return student
+    except Exception as e:
+        print(f"Error retrieving student: {e}")
+        return None
+    finally:
+        cursor.close()
+        db.close()

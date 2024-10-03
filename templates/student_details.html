@@ -1,0 +1,23 @@
+<!-- templates/students_details.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>students Details</title>
+    <link rel="stylesheet" href="/static/css/stud_detail.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Details for {{ students.full_name }}</h1>
+        <p><strong>Email:</strong> {{ students.email }}</p>
+        <p><strong>Phone Number:</strong> {{ students.phone_number }}</p>
+        <p><strong>Board Name:</strong> {{ students.board_name }}</p>
+        <p><strong>Class Name:</strong> {{ students.class_name }}</p>
+        <p><strong>Percentage:</strong> {{ students.percentage }}%</p>
+        <p><strong>Additional Details:</strong> {{ students.additional_details }}</p>
+
+        <a href="{{ url_for('admin_dashboard') }}" class="back-to-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>
