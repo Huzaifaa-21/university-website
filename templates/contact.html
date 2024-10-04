@@ -21,8 +21,19 @@
                 <li><a href="{{ url_for('admission') }}">Admission</a></li>
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% if is_admin %} <!-- Check if the user is an admin -->
-                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                {% if user %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% elif is_admin %}
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                {% else %}
+                <li>
+                    <button class="sign-in-btn">
+                        <a href="{{ url_for('login') }}" style="color: #fff; text-decoration: none;">Sign In</a>
+                    </button>
+                    <button class="sign-up-btn">
+                        <a href="{{ url_for('create_user') }}" style="color: #fff; text-decoration: none;">Sign Up</a>
+                    </button>
+                </li>
                 {% endif %}
             </ul>
         </nav>

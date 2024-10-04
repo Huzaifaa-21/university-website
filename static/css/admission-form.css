@@ -103,6 +103,8 @@ main .admission-form button {
     box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
     transition: all 0.3s ease;
     letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Hover Effect for Submit Button */
@@ -119,34 +121,40 @@ main .admission-form button:active {
     transform: translateY(0);
 }
 
-/* Flash Messages Styling */
-.flash-messages {
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-/* Footer Styling */
-footer {
-    text-align: center;
-    padding: 15px;
+/* Animation on Clicking */
+main .admission-form button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: #0056b3;
-    color: white;
-    margin-top: 50px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
 }
 
-footer p {
-    margin: 0;
-    font-size: 0.9em;
+main .admission-form button:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
-/* Responsive Design */
-@media (max-width: 600px) {
-    main .admission-form {
-        padding: 20px;
-        margin: 20px;
+main .admission-form button:active::before {
+    animation: animate 0.5s forwards;
+}
+
+@keyframes animate {
+    0% {
+        transform: scaleX(0);
+        transform-origin: right;
+    }
+    50% {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: right;
     }
 }

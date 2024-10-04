@@ -34,25 +34,23 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Board Name</th>
-                        <th>Class Name</th>
-                        <th>Percentage</th>
-                        <th>Additional Details</th>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Details</th> <!-- New column for the Details button -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in students %}
                         <tr>
-                            <td>{{ student.full_name }}</td>
-                            <td>{{ student.email }}</td>
-                            <td>{{ student.phone_number }}</td>
-                            <td>{{ student.board_name }}</td>
-                            <td>{{ student.class_name }}</td>
-                            <td>{{ student.percentage }}</td>
-                            <td>{{ student.additional_details }}</td>
+                            <td>{{ student.id }}</td>
+                            <td>{{ student.first_name }}</td>
+                            <td>{{ student.last_name }}</td>
+                            <td>
+                                <a href="{{ url_for('show_student_details', student_id=student.id) }}">
+                                    <button>Details</button>
+                                </a> <!-- Button to view student details -->
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

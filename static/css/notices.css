@@ -65,3 +65,32 @@ footer {
     background-color: #003366;
     color: white;
 }
+
+.sign-in-btn {
+    background-color: #4CAF50; /* Green */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sign-in-btn:hover {
+    background-color: #3e8e41; /* Darken on hover */
+}
+
+.sign-up-btn {
+    background-color: #ff9800; /* Orange */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.sign-up-btn:hover {
+    background-color: #ff8c00; /* Darken on hover */
+}

@@ -1,6 +1,7 @@
 # db.py
 import mysql.connector
 from mysql.connector import Error
+import base64
 
 def create_db_connection(database=None):
     try:
@@ -45,13 +46,13 @@ def create_table():
         create_table_query = """
         CREATE TABLE IF NOT EXISTS admission_applications (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            full_name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            phone_number VARCHAR(50) NOT NULL,
-            board_name VARCHAR(255) NOT NULL,
-            class_name VARCHAR(50) NOT NULL,
-            percentage FLOAT NOT NULL,
-            additional_details TEXT
+            first_name VARCHAR(255) NOT NULL,
+            last_name VARCHAR(255) NOT NULL,
+            father_name VARCHAR(255) NOT NULL,
+            mother_name VARCHAR(255) NOT NULL,
+            address TEXT NOT NULL,
+            course_name VARCHAR(255) NOT NULL,
+            photo LONGBLOB NOT NULL
         );
         """
         cursor.execute(create_table_query)
@@ -75,6 +76,25 @@ def create_table():
         cursor.close()
         db.close()
         
+def save_application_to_db(first_name, last_name, father_name, mother_name, address, course_name, photo):
+    db = create_db_connection("university")
+    cursor = db.cursor()
+    photo_data = photo.read()
+    # Encode the photo data as base64
+    photo_data = base64.b64encode(photo_data).decode('utf-8')
+    print("Sending data to backend")
+    try:
+        # Insert new application into the database
+        cursor.execute("INSERT INTO admission_applications (first_name, last_name, father_name, mother_name, address, course_name, photo) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+                       (first_name, last_name, father_name, mother_name, address, course_name, photo_data))
+        db.commit()
+        print("Application data saved to the database.")
+    except Error as e:
+        print(f"Error saving application data to the database: {e}")
+    finally:
+        cursor.close()
+        db.close()
+        
 def get_user_from_db(user_id):
     db = create_db_connection("university")
     cursor = db.cursor(dictionary=True)
@@ -85,6 +105,41 @@ def get_user_from_db(user_id):
         return user
     except Exception as e:
         print(f"Error retrieving user: {e}")
+        return None
+    finally:
+        cursor.close()
+        db.close()
+        
+def get_all_students():
+    db = create_db_connection("university")
+    if db is None:
+        print("Failed to connect to the 'university' database.")
+        return []
+
+    cursor = db.cursor(dictionary=True)
+    students = []
+
+    try:
+        cursor.execute("SELECT * FROM admission_applications")
+        students = cursor.fetchall()  # Fetch all student details
+    except Error as e:
+        print(f"Error retrieving students: {e}")
+    finally:
+        cursor.close()
+        db.close()
+
+    return students
+
+def get_student_by_id_from_db(student_id):
+    db = create_db_connection("university")
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("SELECT * FROM admission_applications WHERE id = %s", (student_id,))
+        student = cursor.fetchone()  # Fetch a single student's details
+        return student
+    except Exception as e:
+        print(f"Error retrieving student: {e}")
         return None
     finally:
         cursor.close()

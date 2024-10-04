@@ -5,25 +5,24 @@ body {
     padding: 0;
     background-color: #f0f4f8;
     color: #333;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
 
 /* Header styles */
 header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #007BFF;
-    color: white;
-    padding: 15px 0;
-    text-align: center;
+    background-color: #003366;
+    color: #fff;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
 }
 
+/* Logo styling inside the header */
 .logo img {
     height: 50px;
     vertical-align: middle;
@@ -35,14 +34,36 @@ header {
     vertical-align: middle;
 }
 
+/* Navigation styles */
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    color: #ccc;
+}
+
 /* Main content centering */
 main {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items at the start */
-    flex-grow: 1;
-    text-align: center;
-    padding-top: 80px; /* Offset for fixed header */
+    align-items: flex-start;
+    padding-top: 100px; /* Offset for fixed header */
+    margin-bottom: 50px; /* For footer spacing */
+    background-color: #f0f4f8;
 }
 
 /* Application preview section styling */
@@ -53,6 +74,7 @@ main {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     width: 90%; /* Make it responsive */
+    text-align: center;
 }
 
 .application-preview h2 {
@@ -61,8 +83,28 @@ main {
     margin-bottom: 20px;
 }
 
-/* Application details styling */
-.details p {
+/* Student info styling */
+.student-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.student-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.student-name {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Student details styling */
+.student-details {
     font-size: 1.1em;
     margin: 10px 0; /* Added margin for spacing */
 }
@@ -91,7 +133,7 @@ main {
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #007BFF;
+    background-color: #003366;
     color: white;
     position: fixed;
     bottom: 0;
