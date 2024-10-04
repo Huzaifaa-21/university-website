@@ -196,7 +196,6 @@ def get_current_user():
     return None
 
 @app.route('/')
-@login_required
 def home():
     user = get_current_user()  # Replace this with your actual user retrieval logic
     is_admin = user['role'] == 'admin' if user else False  # Ensure user is not None
@@ -204,44 +203,43 @@ def home():
     return render_template('index.html', is_admin=is_admin)
 
 @app.route('/about')
-@login_required
 def about():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
     return render_template('about.html', is_admin=is_admin)
 
 @app.route('/notices')
-@login_required
 def notices():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
     return render_template('notices.html', is_admin=is_admin)
 
 @app.route('/student-corner')
-@login_required
 def student_corner():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
     return render_template('student-corner.html', is_admin=is_admin)
 
 @app.route('/contact')
-@login_required
 def contact():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
     return render_template('contact.html', is_admin=is_admin)
 
 @app.route('/admission')
-@login_required
 def admission():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
     return render_template('admission.html', is_admin=is_admin)
 
 @app.route('/admission-form')
-@login_required
 def admission_form():
-    return render_template('admission-form.html')
+    user = get_current_user()
+    if user:
+        return render_template('admission-form.html')
+    else:
+        flash("Please sign in or sign up to access this page.", "info")
+        return render_template('login.html', login_required=True)
 
 @app.route('/admission-preview')
 @login_required
