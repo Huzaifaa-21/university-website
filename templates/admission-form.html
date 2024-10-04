@@ -1,3 +1,4 @@
+<!-- templates/admission-form.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,7 +122,7 @@
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
             </ul>
         </nav>
-    </header>
+    </header >
 
     <main>
         <section class="admission-form">
@@ -140,31 +141,28 @@
                 {% endif %}
             {% endwith %}
 
-            <form action="{{ url_for('submit_application') }}" method="POST" onsubmit="validateFormOnSubmit(event); validatePhoneOnSubmit(event);">
-                <label for="full_name">Full Name:</label>
-                <input type="text" id="full_name" name="full_name" required>
+            <form action="{{ url_for('submit_application') }}" method="POST" onsubmit="validateFormOnSubmit(event); validatePhoneOnSubmit(event);" enctype="multipart/form-data">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" required>
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" required>
 
-                <label for="phone_number">Phone Number:</label>
-                <input type="tel" id="phone_number" name="phone_number" required oninput="validatePhoneNumber()">
-                <div id="phone-error" class="error-message"></div>
+                <label for="father_name">Father's Name:</label>
+                <input type="text" id="father_name" name="father_name" required>
 
-                <label for="board_name">Board Name:</label>
-                <input type="text" id="board_name" name="board_name" required oninput="validateBoardName()">
-                <div id="board-error" class="error-message"></div>
+                <label for="mother_name">Mother's Name:</label>
+                <input type="text" id="mother_name" name="mother_name" required>
 
-                <label for="class_name">Class (e.g., 12th, Undergraduate):</label>
-                <input type="text" id="class_name" name="class_name" required oninput="validateClassName()">
-                <div id="class-error" class="error-message"></div>
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" rows="4" required></textarea>
 
-                <label for="percentage">Percentage (%):</label>
-                <input type="number" id="percentage" name="percentage" min="0" max="100" step="0.01" required>
+                <label for="course_name">Course Name:</label>
+                <input type="text" id="course_name" name="course_name" required>
 
-                <label for="additional_details">Additional Details (if any):</label>
-                <textarea id="additional_details" name="additional_details" rows="4"></textarea>
-
+                <label for="photo">Photo:</label>
+                <input type="file" id="photo" name="photo" required>
+                
                 <button type="submit">Submit Application</button>
             </form>
         </section>

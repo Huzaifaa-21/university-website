@@ -1,3 +1,4 @@
+<!-- templates/preview_application.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
 <body>
     <header>
         <div class="logo">
-            <img src="logo.png" alt="University Logo" class="logo-img">
+            <img src="static/resources/logo.jpeg" alt="University Logo" class="logo-img">
             <h1>University Name</h1>
         </div>
         <nav>
@@ -32,13 +33,19 @@
         <section class="application-preview">
             <h2>Application Details</h2>
             <div class="details">
-                <p><strong>Full Name:</strong> {{ application_data.full_name }}</p>
-                <p><strong>Email:</strong> {{ application_data.email }}</p>
-                <p><strong>Phone Number:</strong> {{ application_data.phone_number }}</p>
-                <p><strong>Board Name:</strong> {{ application_data.board_name }}</p>
-                <p><strong>Class Name:</strong> {{ application_data.class_name }}</p>
-                <p><strong>Percentage:</strong> {{ application_data.percentage }}</p>
-                <p><strong>Additional Details:</strong> {{ application_data.additional_details }}</p>
+                <div class="student-info">
+                    <img src="{{ url_for('static', filename='photos/' + application_data.photo) }}" alt="Student Photo" class="student-photo">
+                    <div class="student-name">
+                        <p><strong>First Name : </strong> {{ application_data.first_name }}</p>
+                        <p><strong>Last Name : </strong> {{ application_data.last_name }}</p>
+                    </div>
+                </div>
+                <div class="student-details">
+                    <p><strong>Father's Name : </strong> {{ application_data.father_name }}</p>
+                    <p><strong>Mother's Name : </strong> {{ application_data.mother_name }}</p>
+                    <p><strong>Address : </strong> {{ application_data.address }}</p>
+                    <p><strong>Course Name : </strong> {{ application_data.course_name }}</p>
+                </div>
             </div>
             <!-- Download PDF Button -->
             <a href="{{ url_for('download_receipt') }}" class="download-button">Download Receipt</a>

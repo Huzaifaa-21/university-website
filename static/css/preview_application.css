@@ -66,35 +66,6 @@ main {
     background-color: #f0f4f8;
 }
 
-/* Notices Section */
-main .notices {
-    padding: 50px;
-    text-align: center;
-}
-
-main .notices ul {
-    list-style: none;
-    padding: 0;
-    display: inline-block;
-    max-width: 600px; /* Keeps the list centered and compact */
-}
-
-main .notices ul li {
-    padding: 15px;
-    background-color: #d3d3d3; /* Slightly greyish background */
-    margin: 10px 0;
-    border-radius: 8px; /* Rounded corners for a modern feel */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    transition: transform 0.2s ease, background-color 0.3s ease;
-    font-family: 'Georgia', serif; /* Different font for a formal look */
-    font-size: 1.1em;
-}
-
-main .notices ul li:hover {
-    transform: scale(1.02); /* Slight enlargement on hover */
-    background-color: #cccccc; /* Darker grey when hovering */
-}
-
 /* Application preview section styling */
 .application-preview {
     background-color: #ffffff;
@@ -112,8 +83,28 @@ main .notices ul li:hover {
     margin-bottom: 20px;
 }
 
-/* Application details styling */
-.details p {
+/* Student info styling */
+.student-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.student-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.student-name {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Student details styling */
+.student-details {
     font-size: 1.1em;
     margin: 10px 0; /* Added margin for spacing */
 }

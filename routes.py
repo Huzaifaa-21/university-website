@@ -3,12 +3,14 @@ import os
 from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from fpdf import FPDF
-from db import create_db_connection, create_database, create_table, get_user_from_db  # Ensure get_user_from_db is defined in db.py
+from db import create_db_connection, create_database, create_table, get_user_from_db, save_application_to_db
 from functools import wraps
 from otp_auth import generate_otp, send_otp_via_email
 from flask import Blueprint
 from admin_dashboard import admin_dashboard_view
 from student_details import student_details_by_id
+from mysql.connector import Error
+import base64
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -108,6 +110,11 @@ def admin_dashboard():
 @login_required
 def show_student_details(student_id):
     students = student_details_by_id(student_id)  # Call the student_details function
+    if students:
+        photo_path = os.path.join('static', 'photos', str(students['photo']))
+        if os.path.exists(photo_path):
+            with open(photo_path, 'rb') as photo_file:
+                students['photo'] = base64.b64encode(photo_file.read()).decode('utf-8')
     print(students)
     return render_template('student_details.html', students=students)  # Render a template with the student details
 
@@ -248,59 +255,50 @@ def admission_preview():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
     application_data = session.get('application_data')
+    print(f"application_data: {application_data}")
     return render_template('preview_application.html', application_data=application_data, is_admin=is_admin)
 
 @app.route('/submit-application', methods=['POST'])
 @login_required
 def submit_application():
     # Retrieve form data
-    full_name = request.form.get('full_name')
-    email = request.form.get('email')
-    phone_number = request.form.get('phone_number')
-    board_name = request.form.get('board_name')
-    class_name = request.form.get('class_name')
-    percentage = request.form.get('percentage')
-    additional_details = request.form.get('additional_details')
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    father_name = request.form.get('father_name')
+    mother_name = request.form.get('mother_name')
+    address = request.form.get('address')
+    course_name = request.form.get('course_name')
+    photo = request.files.get('photo')
 
     # Input validation
-    if not all([full_name, email, phone_number, board_name, class_name, percentage]):
+    if not all([first_name, last_name, father_name, mother_name, address, course_name]):
         flash('All fields except "Additional Details" are required.', 'danger')
         return render_template('admission-form.html', 
-                               full_name=full_name, 
-                               email=email, 
-                               phone_number=phone_number, 
-                               board_name=board_name, 
-                               class_name=class_name, 
-                               percentage=percentage, 
-                               additional_details=additional_details)
-
-    try:
-        # Convert percentage to float and validate
-        percentage_float = float(percentage)
-        if not (0 <= percentage_float <= 100):
-            raise ValueError("Percentage must be between 0 and 100.")
-    except ValueError as ve:
-        flash(f'Invalid percentage: {ve}', 'danger')
-        return render_template('admission-form.html', 
-                               full_name=full_name, 
-                               email=email, 
-                               phone_number=phone_number, 
-                               board_name=board_name, 
-                               class_name=class_name, 
-                               percentage=percentage, 
-                               additional_details=additional_details)
-
+                               first_name=first_name, 
+                               last_name=last_name, 
+                               father_name=father_name, 
+                               mother_name=mother_name, 
+                               address=address, 
+                               course_name=course_name)
+    
     # Save application data in the session for preview
     session['application_data'] = {
-        'full_name': full_name,
-        'email': email,
-        'phone_number': phone_number,
-        'board_name': board_name,
-        'class_name': class_name,
-        'percentage': percentage_float,
-        'additional_details': additional_details
+        'first_name': first_name,
+        'last_name': last_name,
+        'father_name': father_name,
+        'mother_name': mother_name,
+        'address': address,
+        'course_name': course_name,
+        'photo': photo.filename
     }
 
+    # Save the photo
+    photo.save(os.path.join('static', 'photos', photo.filename))
+    
+   # Save the application data to the database
+    save_application_to_db(first_name, last_name, father_name, mother_name, address, course_name, photo)
+    
+    # Redirect to the preview page
     return redirect(url_for('admission_preview'))
 
 @app.route('/download-receipt')
@@ -314,20 +312,40 @@ def download_receipt():
 
     pdf = FPDF()
     pdf.add_page()
+    pdf.set_font("Arial", size=18, style="B")
+    pdf.cell(200, 10, txt="Admission Application Receipt", ln=True, align='C')
+    pdf.ln(10)
+
+    pdf.set_font("Arial", size=14)
+    pdf.cell(200, 10, txt="Student Information", ln=True, align='L')
+    pdf.ln(5)
     pdf.set_font("Arial", size=12)
 
-    # Add content to PDF
-    pdf.cell(200, 10, txt="Admission Application Receipt", ln=True, align='C')
-    pdf.cell(200, 10, txt=f"Full Name: {application_data['full_name']}", ln=True)
-    pdf.cell(200, 10, txt=f"Email: {application_data['email']}", ln=True)
-    pdf.cell(200, 10, txt=f"Phone Number: {application_data['phone_number']}", ln=True)
-    pdf.cell(200, 10, txt=f"Board Name: {application_data['board_name']}", ln=True)
-    pdf.cell(200, 10, txt=f"Class Name: {application_data['class_name']}", ln=True)
-    pdf.cell(200, 10, txt=f"Percentage: {application_data['percentage']:.2f}%", ln=True)
-    pdf.cell(200, 10, txt=f"Additional Details: {application_data['additional_details']}", ln=True)
+    # Add the student's name and photo
+    pdf.cell(100, 10, txt=f"Full Name: {application_data['first_name']} {application_data['last_name']}", ln=False)
+    pdf.image(os.path.join('static', 'photos', application_data['photo']), x=110, y=pdf.get_y(), w=50, h=50)
+    pdf.ln(10)
+
+    pdf.cell(200, 10, txt=f"Father's Name: {application_data['father_name']}", ln=True)
+    pdf.cell(200, 10, txt=f"Mother's Name: {application_data['mother_name']}", ln=True)
+    pdf.ln(10)
+
+    pdf.set_font("Arial", size=14)
+    pdf.cell(200, 10, txt="Contact Information", ln=True, align='L')
+    pdf.ln(5)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=f"Address: {application_data['address']}", ln=True)
+    pdf.ln(10)
+
+    pdf.set_font("Arial", size=14)
+    pdf.cell(200, 10, txt="Academic Information", ln=True, align='L')
+    pdf.ln(5)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=f"Course Name: {application_data['course_name']}", ln=True)
+    pdf.ln(10)
 
     # Save PDF to a temporary file
-    pdf_file_path = os.path.join('downloaded', f'receipt_{application_data["full_name"].replace(" ", "_")}.pdf')
+    pdf_file_path = os.path.join('downloaded', f'receipt_{application_data["first_name"].replace(" ", "_")}_{application_data["last_name"].replace(" ", "_")}.pdf')
     pdf.output(pdf_file_path)
 
     return send_file(pdf_file_path, as_attachment=True)
