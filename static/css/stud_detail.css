@@ -53,3 +53,21 @@ a:hover {
 .back-to-dashboard:hover {
     background-color: #23527c;
 }
+
+.student-info {
+    margin: 20px;
+}
+
+.student-info h2 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+}
+
+.student-info p {
+    margin-bottom: 10px;
+}
+
+.student-info strong {
+    color: #666;
+}

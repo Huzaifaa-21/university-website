@@ -1,21 +1,30 @@
-<!-- templates/studentss_details.html -->
+<!-- templates/student_details.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>students Details</title>
+    <title>Student Details</title>
     <link rel="stylesheet" href="/static/css/stud_detail.css">
 </head>
 <body>
     <div class="container">
-        <h1>Details for {{ students.first_name }} {{ students.last_name }}</h1>
-        <p><strong>Father's Name:</strong> {{ students.father_name }}</p>
-        <p><strong>Mother's Name:</strong> {{ students.mother_name }}</p>
-        <p><strong>Address:</strong> {{ students.address }}</p>
-        <p><strong>Course Name:</strong> {{ students.course_name }}</p>
-        <img src="data:image/jpeg;base64,{{ students.photo }}" alt="Student Photo">
-        <a href="{{ url_for('admin_dashboard') }}" class="back-to-dashboard">Back to Dashboard</a>
+        <header>
+            <h1>Student Details</h1>
+        </header>
+
+        <section class="student-details">
+            <div class="student-info">
+                <h2>
+                    <img src="data:image/jpeg;base64,{{ students['photo'] }}" alt="Student Image" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+                    {{ students['first_name'] }} {{ students['last_name'] }}
+                </h2>
+                <p><strong>Father's Name:</strong> {{ students['father_name'] }}</p>
+                <p><strong>Mother's Name:</strong> {{ students['mother_name'] }}</p>
+                <p><strong>Address:</strong> {{ students['address'] }}</p>
+                <p><strong>Course Name:</strong> {{ students['course_name'] }}</p>
+            </div>
+        </section>
     </div>
 </body>
 </html>

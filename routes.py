@@ -110,12 +110,6 @@ def admin_dashboard():
 @login_required
 def show_student_details(student_id):
     students = student_details_by_id(student_id)  # Call the student_details function
-    if students:
-        photo_path = os.path.join('static', 'photos', str(students['photo']))
-        if os.path.exists(photo_path):
-            with open(photo_path, 'rb') as photo_file:
-                students['photo'] = base64.b64encode(photo_file.read()).decode('utf-8')
-    print(students)
     return render_template('student_details.html', students=students)  # Render a template with the student details
 
 @app.route('/create_user', methods=['GET', 'POST'])
