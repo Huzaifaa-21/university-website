@@ -1,9 +1,10 @@
 import datetime
 import os
-from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file
+from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file, Response
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from fpdf import FPDF
-from db import create_db_connection, create_database, create_table, get_user_from_db, save_application_to_db
+from db import create_db_connection, create_database, create_table, get_user_from_db, save_application_to_db, get_student_by_id_from_db
 from functools import wraps
 from otp_auth import generate_otp, send_otp_via_email
 from flask import Blueprint
@@ -109,8 +110,19 @@ def admin_dashboard():
 @app.route('/student/<int:student_id>')
 @login_required
 def show_student_details(student_id):
-    students = student_details_by_id(student_id)  # Call the student_details function
-    return render_template('student_details.html', students=students)  # Render a template with the student details
+    application_data = session.get('application_data')
+    print(f"application_data: {application_data}")
+    id = application_data['student_id']
+    
+    # Retrieve the student's photo from the database
+    student = get_student_by_id_from_db(id)  # Replace 1 with the actual student ID
+    if student:
+        photo_binary_data = student['photo']
+        photo_data_uri = f"data:image/jpeg;base64,{base64.b64encode(photo_binary_data).decode('utf-8')}"
+        print(f"application_data after: {application_data}")
+        application_data['photo'] = photo_data_uri
+    
+    return render_template('student_details.html', student=application_data)
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
@@ -248,6 +260,15 @@ def admission_preview():
     is_admin = user['role'] == 'admin' if user else False
     application_data = session.get('application_data')
     print(f"application_data: {application_data}")
+    id = application_data['student_id']
+    
+    # Retrieve the student's photo from the database
+    student = get_student_by_id_from_db(id)  # Replace 1 with the actual student ID
+    if student:
+        photo_binary_data = student['photo']
+        photo_data_uri = f"data:image/jpeg;base64,{base64.b64encode(photo_binary_data).decode('utf-8')}"
+        application_data['photo'] = photo_data_uri
+    
     return render_template('preview_application.html', application_data=application_data, is_admin=is_admin)
 
 @app.route('/submit-application', methods=['POST'])
@@ -272,6 +293,16 @@ def submit_application():
                                mother_name=mother_name, 
                                address=address, 
                                course_name=course_name)
+
+    # Read the photo data
+    photo_data = photo.read()
+
+    # Save the photo to the file system
+    photo.seek(0)  # Reset the file pointer to the beginning of the file
+    photo.save(os.path.join('static', 'photos', photo.filename))
+    
+    # Save the application data to the database
+    id = save_application_to_db(first_name, last_name, father_name, mother_name, address, course_name, photo_data)
     
     # Save application data in the session for preview
     session['application_data'] = {
@@ -281,17 +312,11 @@ def submit_application():
         'mother_name': mother_name,
         'address': address,
         'course_name': course_name,
-        'photo': photo.filename
+        'student_id' : id
     }
-
-    # Save the photo
-    photo.save(os.path.join('static', 'photos', photo.filename))
-    
-   # Save the application data to the database
-    save_application_to_db(first_name, last_name, father_name, mother_name, address, course_name, photo)
     
     # Redirect to the preview page
-    return redirect(url_for('admission_preview'))
+    return redirect (url_for('admission_preview'))
 
 @app.route('/download-receipt')
 @login_required

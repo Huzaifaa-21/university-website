@@ -34,7 +34,7 @@
             <h2>Application Details</h2>
             <div class="details">
                 <div class="student-info">
-                    <img src="{{ url_for('static', filename='photos/' + application_data.photo) }}" alt="Student Photo" class="student-photo">
+                    <img src="{{ application_data.photo }}" alt="Student Photo" class="student-photo">
                     <div class="student-name">
                         <p><strong>First Name : </strong> {{ application_data.first_name }}</p>
                         <p><strong>Last Name : </strong> {{ application_data.last_name }}</p>
