@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University - Home</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Fade-in effect */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Fade-in duration */
+        }
+
+        .fade-in.visible {
+            opacity: 1; /* Fully visible */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -21,41 +32,77 @@
                 <li><a href="{{ url_for('admission') }}">Admission</a></li>
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
                 {% if user %}
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% elif is_admin %}
-                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
-                <li>
-                    <button class="sign-in-btn">
-                        <a href="{{ url_for('login') }}" style="color: #fff; text-decoration: none;">Sign In</a>
-                    </button>
-                    <button class="sign-up-btn">
-                        <a href="{{ url_for('create_user') }}" style="color: #fff; text-decoration: none;">Sign Up</a>
-                    </button>
-                </li>
+                    <li>
+                        <button class="sign-in-btn">
+                            <a href="{{ url_for('login') }}" style="color: #fff; text-decoration: none;">Sign In</a>
+                        </button>
+                        <button class="sign-up-btn">
+                            <a href="{{ url_for('create_user') }}" style="color: #fff; text-decoration: none;">Sign Up</a>
+                        </button>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
     </header>
 
-    <main>
-        <section class="intro">
+    <!-- Parallax Section -->
+    <section class="parallax">
+        <div class="typing-text">
             <h2 id="typed-title"></h2>
             <p id="typed-subtitle"></p>
-        </section>
+        </div>
+    </section>
 
-        <section class="image-gallery">
-            <img src="{{ url_for('static', filename='resources/uni3.jpeg') }}" alt="Campus Image 1" class="fade-in" width="300">
-            <img src="{{ url_for('static', filename='resources/uni2.jpg') }}" alt="Campus Image 2" class="fade-in" width="300">
-            <img src="{{ url_for('static', filename='resources/uni1.webp') }}" alt="Campus Image 3" class="fade-in" width="300">
+    <main>
+        <section class="intro">
+            <div class="intro-overlay"></div> <!-- Overlay div for hover effect -->
+            <p>Explore our vibrant community and endless opportunities.</p>
+            <a href="{{ url_for('admission') }}" class="cta-button">Join Us Now!</a>
+        </section>
+        
+        <!-- New content section with image and text -->
+        <section class="content-section">
+            <div class="content-item">
+                <div class="content-image">
+                    <img src="{{ url_for('static', filename='resources/lab2.jpg') }}" alt="Research Lab" class="pop-out-left fade-in">
+                </div>
+                <div class="content-text">
+                    <h3>Advanced Research Labs</h3>
+                    <p>Our university offers state-of-the-art research labs that enable students and faculty to conduct cutting-edge research in various fields, including artificial intelligence, biotechnology, and renewable energy.</p>
+                </div>
+            </div>
+
+            <div class="content-item">
+                <div class="content-image">
+                    <img src="{{ url_for('static', filename='resources/lib.jpeg') }}" alt="Library" class="pop-out-left fade-in">
+                </div>
+                <div class="content-text">
+                    <h3>World-Class Library</h3>
+                    <p>The university library is home to a vast collection of books, journals, and digital resources, providing students with the knowledge and tools they need to excel in their academic pursuits.</p>
+                </div>
+            </div>
+
+            <div class="content-item">
+                <div class="content-image">
+                    <img src="{{ url_for('static', filename='resources/sports.jpg') }}" alt="Sports Facilities" class="pop-out-left fade-in">
+                </div>
+                <div class="content-text">
+                    <h3>Modern Sports Facilities</h3>
+                    <p>Our modern sports facilities are designed to promote physical fitness and well-being. We offer a wide range of activities, from soccer and tennis to swimming and basketball.</p>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer>
         <p>&copy; 2024 University Name. All rights reserved.</p>
     </footer>
-    
+
     <script src="/static/js/script.js"></script>
     <script>
         // Typing effect for intro text
@@ -97,6 +144,19 @@
                 header.classList.remove('scrolled');
             }
         };
+
+        // Pop-out animation on scroll
+        window.addEventListener('scroll', function() {
+            const popOutElements = document.querySelectorAll('.pop-out-left');
+            const triggerPoint = window.innerHeight * 0.8;
+
+            popOutElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < triggerPoint) {
+                    el.classList.add('visible');
+                }
+            });
+        });
     </script>
 </body>
 </html>

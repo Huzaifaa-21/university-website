@@ -6,30 +6,11 @@
     <title>Login - University Portal</title>
     <link rel="stylesheet" href="/static/css/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group.error input {
-            border: 2px solid red;
-            box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.8em;
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-        }
-    </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-box">
-            <h2>Login</h2>
+            <h2 id="login-title"></h2>
             <form action="{{ url_for('login') }}" method="POST">
                 <div class="input-group {{ 'error' if 'email_error' in session }}">
                     <input type="email" name="email" id="email" placeholder=" " required>
@@ -52,5 +33,32 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript should be placed here -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("DOM fully loaded");
+            const text = "Login";
+            const title = document.getElementById("login-title");
+            let index = 0;
+        
+            function typeText() {
+                if (index < text.length) {
+                    title.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(typeText, 170); // Adjust speed (150ms delay between characters)
+                } else {
+                    title.style.borderRight = 'none'; // Remove the blinking cursor after typing completes
+                }
+            }
+        
+            if (title) {
+                typeText();
+            } else {
+                console.log("Element with ID 'login-title' not found");
+            }
+        });
+    </script>
+    
 </body>
 </html>

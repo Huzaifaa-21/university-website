@@ -7,11 +7,38 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #8360c3, #2ebf91);
+    background: linear-gradient(270deg, #8360c3, #2ebf91, #ff6a00);
+    background-size: 600% 600%;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: gradientAnimation 8s ease infinite; /* Background animation */
+}
+
+/* Background Animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Pop-Out Effect Animation */
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* Login Container */
@@ -32,6 +59,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
     text-align: center;
+    animation: popIn 0.5s ease-out; /* Pop-in animation */
 }
 
 .login-box h2 {
@@ -58,10 +86,18 @@ body {
     transition: all 0.3s;
 }
 
+/* Hover Effect for Input Fields */
+.input-group input:hover,
+.input-group select:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+    border-color: #2ebf91;
+}
+
 /* Focus States for Input and Select */
 .input-group input:focus,
 .input-group select:focus {
     border-color: #2ebf91;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Stronger shadow on focus */
 }
 
 /* Label Styling */
@@ -112,7 +148,7 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .login-btn:hover {
@@ -133,4 +169,20 @@ body {
 
 .login-btn:hover::before {
     transform: scaleX(1);
+}
+
+@keyframes blinkCursor {
+    0% { border-right-color: rgba(0, 0, 0, 0.75); }
+    50% { border-right-color: transparent; }
+    100% { border-right-color: rgba(0, 0, 0, 0.75); }
+}
+
+#login-title {
+    display: inline-block;
+    font-size: 28px;
+    color: #333;
+    border-right: 2px solid rgba(0, 0, 0, 0.75);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: blinkCursor 0.8s steps(2, start) infinite; /* Blinking cursor effect */
 }
