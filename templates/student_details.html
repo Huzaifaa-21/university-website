@@ -16,13 +16,13 @@
         <section class="student-details">
             <div class="student-info">
                 <h2>
-                    <img src="data:image/jpeg;base64,{{ students['photo'] }}" alt="Student Image" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
-                    {{ students['first_name'] }} {{ students['last_name'] }}
+                    <img src="{{ student['photo'] }}" alt="Student Image" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+                    {{ student['first_name'] }} {{ student['last_name'] }}
                 </h2>
-                <p><strong>Father's Name:</strong> {{ students['father_name'] }}</p>
-                <p><strong>Mother's Name:</strong> {{ students['mother_name'] }}</p>
-                <p><strong>Address:</strong> {{ students['address'] }}</p>
-                <p><strong>Course Name:</strong> {{ students['course_name'] }}</p>
+                <p><strong>Father's Name:</strong> {{ student['father_name'] }}</p>
+                <p><strong>Mother's Name:</strong> {{ student['mother_name'] }}</p>
+                <p><strong>Address:</strong> {{ student['address'] }}</p>
+                <p><strong>Course Name:</strong> {{ student['course_name'] }}</p>
             </div>
         </section>
     </div>

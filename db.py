@@ -79,16 +79,20 @@ def create_table():
 def save_application_to_db(first_name, last_name, father_name, mother_name, address, course_name, photo):
     db = create_db_connection("university")
     cursor = db.cursor()
-    photo_data = photo.read()
-    # Encode the photo data as base64
-    photo_data = base64.b64encode(photo_data).decode('utf-8')
-    print("Sending data to backend")
+    if not photo:
+        print("Error: No photo data provided.")
+        return
     try:
         # Insert new application into the database
         cursor.execute("INSERT INTO admission_applications (first_name, last_name, father_name, mother_name, address, course_name, photo) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
-                       (first_name, last_name, father_name, mother_name, address, course_name, photo_data))
+                       (first_name, last_name, father_name, mother_name, address, course_name, photo))
         db.commit()
         print("Application data saved to the database.")
+        # Retrieve the student ID
+        cursor.execute("SELECT id FROM admission_applications ORDER BY id DESC LIMIT 1")
+        student_id = cursor.fetchone()[0]
+        print(f"Sending student_id {student_id} for {first_name} {last_name}")
+        return student_id
     except Error as e:
         print(f"Error saving application data to the database: {e}")
     finally:
