@@ -20,9 +20,20 @@
                 <li><a href="{{ url_for('student_corner') }}">Student Corner</a></li>
                 <li><a href="{{ url_for('admission') }}">Admission</a></li>
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% if is_admin %} <!-- Check if the user is an admin -->
+                {% if user %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% elif is_admin %}
                     <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li>
+                        <button class="sign-in-btn">
+                            <a href="{{ url_for('login') }}" style="color: #fff; text-decoration: none;">Sign In</a>
+                        </button>
+                        <button class="sign-up-btn">
+                            <a href="{{ url_for('create_user') }}" style="color: #fff; text-decoration: none;">Sign Up</a>
+                        </button>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
@@ -31,17 +42,59 @@
     <main>
         <section class="student-corner">
             <h2>Student Resources</h2>
-            <ul>
-                <li><a href="#">Class Schedules</a></li>
-                <li><a href="#">Examination Timetable</a></li>
-                <li><a href="#">Assignments</a></li>
-                <li><a href="#">Study Materials</a></li>
+            <ul class="resource-list">
+                <li class="pop-out"><a href="#">Class Schedules</a></li>
+                <li class="pop-out"><a href="#">Examination Timetable</a></li>
+                <li class="pop-out"><a href="#">Assignments</a></li>
+                <li class="pop-out"><a href="#">Study Materials</a></li>
             </ul>
         </section>
     </main>
 
+    <div class="news-ticker">
+        <div class="news-content">
+            <div class="news-box">
+                <h3>Global Education Summit 2024</h3>
+                <p>Innovations in learning are set to be discussed at the upcoming summit.</p>
+            </div>
+            <div class="news-box">
+                <h3>AI in Education</h3>
+                <p>New research on AI's impact on education has been released.</p>
+            </div>
+            <div class="news-box">
+                <h3>University Rankings 2024</h3>
+                <p>The latest university rankings have been announced.</p>
+            </div>
+            <div class="news-box">
+                <h3>Scholarship Opportunities</h3>
+                <p>New scholarships are available for international students.</p>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2024 University Name. All rights reserved.</p>
     </footer>
+
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const popOutElements = document.querySelectorAll('.pop-out');
+        const triggerPoint = window.innerHeight * 0.8;
+
+        function checkVisibility() {
+            popOutElements.forEach((el, index) => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < triggerPoint) {
+                    setTimeout(() => {
+                        el.classList.add('visible');
+                    }, index * 300); // Delay each pop-out by 300ms
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkVisibility);
+        checkVisibility(); // Initial check in case elements are already in view
+    });
+</script>
 </html>
