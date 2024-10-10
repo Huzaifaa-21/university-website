@@ -322,10 +322,16 @@ def submit_application():
 @login_required
 def download_receipt():
     application_data = session.get('application_data')
-    
     if not application_data:
         flash("No application data found!", "danger")
         return redirect(url_for('admission'))
+
+    id = application_data['student_id']
+    student = get_student_by_id_from_db(id)
+    if student:
+        photo_binary_data = student['photo']
+        photo_data_uri = f"data:image/jpeg;base64,{base64.b64encode(photo_binary_data).decode('utf-8')}"
+        application_data['photo'] = photo_data_uri
 
     pdf = FPDF()
     pdf.add_page()
@@ -338,11 +344,29 @@ def download_receipt():
     pdf.ln(5)
     pdf.set_font("Arial", size=12)
 
-    # Add the student's name and photo
     pdf.cell(100, 10, txt=f"Full Name: {application_data['first_name']} {application_data['last_name']}", ln=False)
-    pdf.image(os.path.join('static', 'photos', application_data['photo']), x=110, y=pdf.get_y(), w=50, h=50)
-    pdf.ln(10)
 
+    # Handle base64-encoded photo
+    photo_data = application_data.get('photo')
+    if photo_data and photo_data.startswith('data:image'):
+        base64_str = photo_data.split(',')[1]
+        photo_binary_data = base64.b64decode(base64_str)
+
+        # Save the decoded image to a temporary file
+        temp_photo_path = os.path.join('static', 'photos', 'temp_photo.jpg')
+        with open(temp_photo_path, 'wb') as temp_photo_file:
+            temp_photo_file.write(photo_binary_data)
+
+        # Use the temporary file in your PDF generation
+        pdf.image(temp_photo_path, x=110, y=pdf.get_y(), w=50, h=50)
+
+        # Optionally, remove the temporary file after use
+        os.remove(temp_photo_path)
+    else:
+        # Handle the case where photo data is a file path
+        pdf.image(os.path.join('static', 'photos', photo_data), x=110, y=pdf.get_y(), w=50, h=50)
+
+    pdf.ln(10)
     pdf.cell(200, 10, txt=f"Father's Name: {application_data['father_name']}", ln=True)
     pdf.cell(200, 10, txt=f"Mother's Name: {application_data['mother_name']}", ln=True)
     pdf.ln(10)
@@ -361,7 +385,6 @@ def download_receipt():
     pdf.cell(200, 10, txt=f"Course Name: {application_data['course_name']}", ln=True)
     pdf.ln(10)
 
-    # Save PDF to a temporary file
     pdf_file_path = os.path.join('downloaded', f'receipt_{application_data["first_name"].replace(" ", "_")}_{application_data["last_name"].replace(" ", "_")}.pdf')
     pdf.output(pdf_file_path)
 
