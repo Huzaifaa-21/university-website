@@ -2,14 +2,15 @@
 import mysql.connector
 from mysql.connector import Error
 import base64
+import os
 
 def create_db_connection(database=None):
     try:
         return mysql.connector.connect(
-            host="localhost",
-            user="root",
-            port=3306,  # Use the correct port (3308 as per your earlier context)
-            password="Lko@6388895330",
+            host=os.getenv("DB_HOST", "db"),
+            user=os.getenv("DB_USER", "root"),
+            port=int(os.getenv("DB_PORT", 3306)),
+            password=os.getenv("DB_PASSWORD", "Lko@6388895330"),
             database=database
         )
     except Error as e:

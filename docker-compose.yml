@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5002:5002"
+    volumes:
+      - .:/app
+    environment:
+      FLASK_ENV: development
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: Lko@6388895330
+      DB_NAME: university
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_DATABASE: university
+      MYSQL_ROOT_PASSWORD: Lko@6388895330
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:

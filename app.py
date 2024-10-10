@@ -11,4 +11,4 @@ if __name__ == '__main__':
     # app.register_blueprint(student_bp)  # Registering the student blueprint
     # app.register_blueprint(admin_routes)  # Registering the admin routes
     
-    app.run(debug=True)  # Run the Flask application
+    app.run(host="0.0.0.0", port=5002, debug=True)
