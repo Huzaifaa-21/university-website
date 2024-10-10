@@ -2,7 +2,7 @@ import unittest
 import logging
 from app import app  # Import app from app.py
 from werkzeug.security import generate_password_hash
-from db import create_db_connection
+from db import create_db_connection, create_database, create_table
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -13,6 +13,10 @@ class TestRoutes(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
+
+        # Ensure the database and tables are created
+        create_database()
+        create_table()
 
         # Set up a test user in the database
         db = create_db_connection("university")
