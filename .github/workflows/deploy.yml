@@ -1,0 +1,20 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build the Docker Image
+        run: docker build -t my-flask-app .
+      - name: Log in to Heroku Container Registry
+        run: heroku container:login
+      - name: Push the Docker Image to Heroku Container Registry
+        run: heroku container:push web
+      - name: Deploy to Heroku
+        run: heroku container:release web
