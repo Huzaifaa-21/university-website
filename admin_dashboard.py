@@ -13,5 +13,5 @@ def admin_dashboard_view():
     # Handle the case where no students are retrieved
     if not students:
         flash("No students found.", "warning")
-    print(f"Sending to Dashboard :  {students}")
+    # print(f"Sending to Dashboard :  {students}")
     return render_template('admin_dashboard.html', students=students)

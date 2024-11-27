@@ -32,9 +32,9 @@
                 <li><a href="{{ url_for('admission') }}">Admission</a></li>
                 <li><a href="{{ url_for('contact') }}">Contact</a></li>
                 {% if user %}
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% elif is_admin %}
-                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    {% if user['role'] == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    {% endif %}
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
                     <li>
@@ -59,6 +59,7 @@
     </section>
 
     <main>
+        <h1>Welcome to the University Portal</h1>
         <section class="intro">
             <div class="intro-overlay"></div> <!-- Overlay div for hover effect -->
             <p>Explore our vibrant community and endless opportunities.</p>

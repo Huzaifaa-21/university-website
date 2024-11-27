@@ -12,12 +12,16 @@ from admin_dashboard import admin_dashboard_view
 from student_details import student_details_by_id
 from mysql.connector import Error
 import base64
+import logging
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 admin_routes = Blueprint('admin_routes', __name__)
 student_bp = Blueprint('student', __name__)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Login required decorator
 def login_required(f):
@@ -211,38 +215,38 @@ def get_current_user():
 def home():
     user = get_current_user()  # Replace this with your actual user retrieval logic
     is_admin = user['role'] == 'admin' if user else False  # Ensure user is not None
-    print(f"User: {user}, Is Admin: {is_admin}")
-    return render_template('index.html', is_admin=is_admin)
+    logger.info(f"User: {user}, Is Admin: {is_admin}")
+    return render_template('index.html',user=user, is_admin=is_admin)
 
 @app.route('/about')
 def about():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
-    return render_template('about.html', is_admin=is_admin)
+    return render_template('about.html',user=user, is_admin=is_admin)
 
 @app.route('/notices')
 def notices():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
-    return render_template('notices.html', is_admin=is_admin)
+    return render_template('notices.html',user=user, is_admin=is_admin)
 
 @app.route('/student-corner')
 def student_corner():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
-    return render_template('student-corner.html', is_admin=is_admin)
+    return render_template('student-corner.html',user=user, is_admin=is_admin)
 
 @app.route('/contact')
 def contact():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
-    return render_template('contact.html', is_admin=is_admin)
+    return render_template('contact.html',user=user, is_admin=is_admin)
 
 @app.route('/admission')
 def admission():
     user = get_current_user()
     is_admin = user['role'] == 'admin' if user else False
-    return render_template('admission.html', is_admin=is_admin)
+    return render_template('admission.html',user=user, is_admin=is_admin)
 
 @app.route('/admission-form')
 def admission_form():
